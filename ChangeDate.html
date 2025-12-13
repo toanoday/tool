@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trình Tạo Ngày Ngẫu Nhiên</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            -webkit-font-smoothing: antialiased;
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 py-10 px-4 font-sans text-slate-800">
+    <div class="max-w-5xl mx-auto">
+        
+        <!-- Header -->
+        <div class="text-center mb-10">
+            <h1 class="text-3xl md:text-4xl font-extrabold text-indigo-900 mb-3">
+                Trình Tạo Ngày Ngẫu Nhiên
+            </h1>
+            <p class="text-slate-500 text-lg">
+                Chọn khoảng thời gian và số lượng ngày để tạo danh sách ngẫu nhiên.
+            </p>
+        </div>
+
+        <!-- Controls Section -->
+        <div class="bg-white rounded-2xl shadow-xl p-6 md:p-8 mb-8 border border-slate-100">
+            <div class="flex flex-col md:flex-row gap-6 items-end justify-center">
+                
+                <!-- Start Date -->
+                <div class="w-full md:w-1/4">
+                    <label class="block text-sm font-semibold text-slate-700 mb-2 ml-1">
+                        Từ ngày
+                    </label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                            <!-- Calendar Icon -->
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                        </div>
+                        <input type="date" id="startDate" class="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all outline-none text-slate-700 font-medium">
+                    </div>
+                </div>
+
+                <!-- End Date -->
+                <div class="w-full md:w-1/4">
+                    <label class="block text-sm font-semibold text-slate-700 mb-2 ml-1">
+                        Đến ngày
+                    </label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                            <!-- Calendar Icon -->
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                        </div>
+                        <input type="date" id="endDate" class="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all outline-none text-slate-700 font-medium">
+                    </div>
+                </div>
+
+                <!-- Quantity Input -->
+                <div class="w-full md:w-1/5">
+                    <label class="block text-sm font-semibold text-slate-700 mb-2 ml-1">
+                        Số ngày/tháng
+                    </label>
+                    <div class="relative">
+                        <input type="number" id="dayCount" value="4" min="1" max="29" class="w-full pl-4 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all outline-none text-slate-700 font-medium text-center" placeholder="4">
+                        <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-slate-400 text-xs">
+                            Max 29
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Generate Button -->
+                <div class="w-full md:w-auto">
+                    <button onclick="handleGenerate()" class="w-full md:w-auto bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-8 rounded-xl shadow-lg shadow-indigo-200 hover:shadow-indigo-300 transition-all transform hover:-translate-y-0.5 active:translate-y-0 flex items-center justify-center gap-2 cursor-pointer select-none">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"></path><path d="M16 21h5v-5"></path></svg>
+                        <span>Tạo lịch</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Error Message -->
+            <div id="error-message" class="hidden mt-4 p-3 bg-red-50 text-red-600 rounded-lg text-sm font-medium text-center animate-pulse"></div>
+        </div>
+
+        <!-- Results Section -->
+        <div id="results-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Results will be injected here -->
+        </div>
+        
+        <!-- Empty State -->
+        <div id="empty-state" class="text-center py-16 text-slate-400 bg-white/50 rounded-2xl border-2 border-dashed border-slate-200">
+            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mx-auto mb-4 opacity-20"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+            <p>Kết quả sẽ hiển thị ở đây sau khi bạn bấm nút "Tạo lịch"</p>
+        </div>
+
+    </div>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // --- Utilities ---
+        const getRandomInt = (min, max) => {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        };
+
+        const formatDate = (day, month, year) => {
+            const d = day.toString().padStart(2, '0');
+            const m = (month + 1).toString().padStart(2, '0'); // Month is 0-indexed
+            return `${d}/${m}/${year}`;
+        };
+
+        // --- Main Logic ---
+        function handleGenerate() {
+            const startDateInput = document.getElementById('startDate').value;
+            const endDateInput = document.getElementById('endDate').value;
+            const dayCountInput = parseInt(document.getElementById('dayCount').value);
+            const errorDiv = document.getElementById('error-message');
+            const resultsContainer = document.getElementById('results-container');
+            const emptyState = document.getElementById('empty-state');
+
+            // Reset UI
+            errorDiv.classList.add('hidden');
+            errorDiv.textContent = '';
+            resultsContainer.innerHTML = '';
+            
+            // Validation
+            if (!startDateInput || !endDateInput) {
+                showError('Vui lòng chọn đầy đủ ngày bắt đầu và ngày kết thúc.');
+                return;
+            }
+
+            if (!dayCountInput || dayCountInput < 1 || dayCountInput > 29) {
+                showError('Số ngày mỗi tháng phải từ 1 đến 29.');
+                return;
+            }
+
+            const start = new Date(startDateInput);
+            const end = new Date(endDateInput);
+
+            if (start > end) {
+                showError('Ngày bắt đầu không được lớn hơn ngày kết thúc.');
+                return;
+            }
+
+            // Generate Dates
+            emptyState.classList.add('hidden');
+            let current = new Date(start.getFullYear(), start.getMonth(), 1);
+            const endTime = new Date(end.getFullYear(), end.getMonth(), 1).getTime();
+            let hasResults = false;
+
+            while (current.getTime() <= endTime) {
+                hasResults = true;
+                const year = current.getFullYear();
+                const month = current.getMonth();
+                const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+                const randomDays = new Set();
+                // Ensure we don't try to get more days than exist in the month
+                const countToGet = Math.min(dayCountInput, daysInMonth);
+
+                while (randomDays.size < countToGet) {
+                    const day = getRandomInt(1, daysInMonth);
+                    randomDays.add(day);
+                }
+
+                const sortedDays = Array.from(randomDays).sort((a, b) => a - b);
+                const formattedDates = sortedDays.map(day => formatDate(day, month, year));
+                const monthName = `Tháng ${month + 1}, ${year}`;
+
+                // Create Card HTML
+                const card = createMonthCard(monthName, formattedDates);
+                resultsContainer.appendChild(card);
+
+                current.setMonth(current.getMonth() + 1);
+            }
+
+            if (!hasResults) {
+                emptyState.classList.remove('hidden');
+            }
+        }
+
+        function showError(msg) {
+            const errorDiv = document.getElementById('error-message');
+            errorDiv.textContent = msg;
+            errorDiv.classList.remove('hidden');
+        }
+
+        // --- DOM Creation ---
+        function createMonthCard(monthName, dates) {
+            const card = document.createElement('div');
+            card.className = "bg-white rounded-xl shadow-md border border-slate-100 overflow-hidden hover:shadow-lg transition-shadow duration-300 fade-in";
+
+            // Header
+            const header = document.createElement('div');
+            header.className = "bg-indigo-50 px-5 py-3 border-b border-indigo-100 flex justify-between items-center";
+            header.innerHTML = `
+                <span class="font-bold text-indigo-900">${monthName}</span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-indigo-400"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+            `;
+
+            // List Container
+            const list = document.createElement('div');
+            list.className = "p-5 space-y-3";
+
+            dates.forEach(date => {
+                const item = document.createElement('div');
+                item.className = "group flex items-center justify-between p-3 rounded-lg border cursor-pointer select-none transition-all duration-200 bg-white border-slate-100 hover:border-indigo-200 hover:bg-indigo-50/30";
+                
+                // Content
+                item.innerHTML = `
+                    <span class="font-mono text-lg font-medium text-slate-700 date-text">${date}</span>
+                    <div class="icon-container p-1.5 rounded-md transition-colors bg-slate-100 text-slate-400 group-hover:bg-white group-hover:text-indigo-500">
+                        <svg class="copy-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                        <svg class="check-icon hidden" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    </div>
+                `;
+
+                // Click to copy
+                item.onclick = () => copyToClipboard(date, item);
+                list.appendChild(item);
+            });
+
+            card.appendChild(header);
+            card.appendChild(list);
+            return card;
+        }
+
+        function copyToClipboard(text, element) {
+            // Fallback copy logic
+            const doCopy = () => {
+                showCopiedFeedback(element);
+            };
+
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(text).then(doCopy).catch(err => {
+                    console.error('Async: Could not copy text: ', err);
+                    fallbackCopyTextToClipboard(text, doCopy);
+                });
+            } else {
+                fallbackCopyTextToClipboard(text, doCopy);
+            }
+        }
+
+        function fallbackCopyTextToClipboard(text, onSuccess) {
+            var textArea = document.createElement("textarea");
+            textArea.value = text;
+            
+            // Avoid scrolling to bottom
+            textArea.style.top = "0";
+            textArea.style.left = "0";
+            textArea.style.position = "fixed";
+
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+
+            try {
+                var successful = document.execCommand('copy');
+                if(successful) onSuccess();
+            } catch (err) {
+                console.error('Fallback: Oops, unable to copy', err);
+            }
+
+            document.body.removeChild(textArea);
+        }
+
+        function showCopiedFeedback(element) {
+            // Visual feedback classes
+            const originalClasses = ["bg-white", "border-slate-100", "hover:border-indigo-200", "hover:bg-indigo-50/30"];
+            const successClasses = ["bg-green-50", "border-green-200"];
+            
+            // Text color logic
+            const textSpan = element.querySelector('.date-text');
+            textSpan.classList.remove('text-slate-700');
+            textSpan.classList.add('text-green-700');
+
+            // Icon background logic
+            const iconContainer = element.querySelector('.icon-container');
+            iconContainer.classList.remove('bg-slate-100', 'text-slate-400', 'group-hover:bg-white', 'group-hover:text-indigo-500');
+            iconContainer.classList.add('bg-green-100', 'text-green-600');
+
+            // Swap icons
+            const copyIcon = element.querySelector('.copy-icon');
+            const checkIcon = element.querySelector('.check-icon');
+            copyIcon.classList.add('hidden');
+            checkIcon.classList.remove('hidden');
+
+            // Apply container bg change
+            element.classList.remove(...originalClasses);
+            element.classList.add(...successClasses);
+
+            // Revert after 1.5s
+            setTimeout(() => {
+                element.classList.remove(...successClasses);
+                element.classList.add(...originalClasses);
+                
+                textSpan.classList.remove('text-green-700');
+                textSpan.classList.add('text-slate-700');
+
+                iconContainer.classList.remove('bg-green-100', 'text-green-600');
+                iconContainer.classList.add('bg-slate-100', 'text-slate-400', 'group-hover:bg-white', 'group-hover:text-indigo-500');
+
+                copyIcon.classList.remove('hidden');
+                checkIcon.classList.add('hidden');
+            }, 1500);
+        }
+    </script>
+</body>
+</html>
