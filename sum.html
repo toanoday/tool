@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bộ Đếm & Tính Tiền - Tool Tiện Ích</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #f8fafc;
+            background-image: radial-gradient(#e2e8f0 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+        .glass-nav {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .animate-fade-in-up {
+            animation: fadeInUp 0.5s ease-out forwards;
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        /* Remove arrows from number input */
+        input[type=number]::-webkit-inner-spin-button, 
+        input[type=number]::-webkit-outer-spin-button { 
+            -webkit-appearance: none; 
+            margin: 0; 
+        }
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col text-slate-800">
+
+    <!-- Header (Sticky & Glassmorphism) -->
+    <header class="glass-nav fixed w-full top-0 z-50 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16 sm:h-20">
+                <div class="flex items-center gap-4">
+                    <a href="index.html" class="w-10 h-10 rounded-xl flex items-center justify-center text-slate-500 hover:bg-slate-100 hover:text-green-600 transition-colors">
+                        <i class="fa-solid fa-arrow-left text-lg"></i>
+                    </a>
+                    <div class="h-6 w-px bg-slate-200"></div>
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center text-green-600">
+                            <i class="fa-solid fa-calculator"></i>
+                        </div>
+                        <h1 class="text-lg sm:text-xl font-bold text-slate-800">
+                            Bộ Đếm & Tính Tiền
+                        </h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow pt-24 sm:pt-32 pb-12 px-4 sm:px-6 lg:px-8 max-w-3xl mx-auto w-full">
+        
+        <!-- Hero Section -->
+        <div class="text-center mb-10 animate-fade-in-up">
+            <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-slate-900 mb-3 tracking-tight">
+                Quản Lý <span class="text-green-600">Số Lượng</span>
+            </h2>
+            <p class="text-slate-500 text-sm sm:text-base max-w-2xl mx-auto">
+                Công cụ đếm số lượng và tính tổng tiền tự động, dữ liệu được lưu trữ an toàn.
+            </p>
+        </div>
+
+        <!-- Main Card -->
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 sm:p-8 mb-8 animate-fade-in-up" style="animation-delay: 0.1s;">
+            
+            <!-- Price Settings -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
+                <!-- Price 1 -->
+                <div class="bg-blue-50/50 rounded-xl p-4 border border-blue-100">
+                    <label class="block text-xs font-bold text-blue-600 uppercase tracking-wider mb-2">
+                        Đơn giá Loại 1
+                    </label>
+                    <div class="relative">
+                        <input type="text" id="price1" placeholder="0" oninput="handlePriceInput(this)" 
+                            class="w-full pl-4 pr-12 py-3 bg-white border border-blue-200 rounded-lg focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all outline-none text-slate-700 font-bold text-lg">
+                        <div class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none text-slate-400 font-medium">
+                            đ
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Price 2 -->
+                <div class="bg-orange-50/50 rounded-xl p-4 border border-orange-100">
+                    <label class="block text-xs font-bold text-orange-600 uppercase tracking-wider mb-2">
+                        Đơn giá Loại 2
+                    </label>
+                    <div class="relative">
+                        <input type="text" id="price2" placeholder="0" oninput="handlePriceInput(this)" 
+                            class="w-full pl-4 pr-12 py-3 bg-white border border-orange-200 rounded-lg focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all outline-none text-slate-700 font-bold text-lg">
+                        <div class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none text-slate-400 font-medium">
+                            đ
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="grid grid-cols-2 gap-4 sm:gap-6 mb-8">
+                <button onclick="clickButton(1)" class="group relative overflow-hidden bg-blue-600 hover:bg-blue-700 text-white rounded-2xl p-6 shadow-lg shadow-blue-500/30 transition-all transform hover:-translate-y-1 active:translate-y-0">
+                    <div class="absolute top-0 right-0 -mt-4 -mr-4 w-24 h-24 bg-white opacity-10 rounded-full blur-xl group-hover:scale-150 transition-transform duration-500"></div>
+                    <div class="relative z-10 flex flex-col items-center">
+                        <span class="text-3xl font-bold mb-1">+1</span>
+                        <span class="text-sm font-medium opacity-90">Thêm Loại 1</span>
+                    </div>
+                </button>
+
+                <button onclick="clickButton(2)" class="group relative overflow-hidden bg-orange-500 hover:bg-orange-600 text-white rounded-2xl p-6 shadow-lg shadow-orange-500/30 transition-all transform hover:-translate-y-1 active:translate-y-0">
+                    <div class="absolute top-0 right-0 -mt-4 -mr-4 w-24 h-24 bg-white opacity-10 rounded-full blur-xl group-hover:scale-150 transition-transform duration-500"></div>
+                    <div class="relative z-10 flex flex-col items-center">
+                        <span class="text-3xl font-bold mb-1">+1</span>
+                        <span class="text-sm font-medium opacity-90">Thêm Loại 2</span>
+                    </div>
+                </button>
+            </div>
+
+            <!-- Stats Box -->
+            <div class="bg-slate-50 rounded-xl border border-slate-100 overflow-hidden">
+                <!-- Row 1 -->
+                <div class="flex items-center justify-between p-4 border-b border-slate-100">
+                    <div class="flex items-center gap-3">
+                        <div class="w-2 h-2 rounded-full bg-blue-500"></div>
+                        <span class="text-sm font-medium text-slate-600">Số lượng Loại 1</span>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <input type="number" id="qty1" value="0" oninput="manualChange()" 
+                            class="w-20 py-1 px-2 text-center bg-white border border-slate-200 rounded-md text-blue-600 font-bold focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500">
+                        <span class="text-base font-bold text-blue-600 min-w-[100px] text-right" id="money1">0 đ</span>
+                    </div>
+                </div>
+
+                <!-- Row 2 -->
+                <div class="flex items-center justify-between p-4 border-b border-slate-100">
+                    <div class="flex items-center gap-3">
+                        <div class="w-2 h-2 rounded-full bg-orange-500"></div>
+                        <span class="text-sm font-medium text-slate-600">Số lượng Loại 2</span>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <input type="number" id="qty2" value="0" oninput="manualChange()" 
+                            class="w-20 py-1 px-2 text-center bg-white border border-slate-200 rounded-md text-orange-600 font-bold focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500">
+                        <span class="text-base font-bold text-orange-600 min-w-[100px] text-right" id="money2">0 đ</span>
+                    </div>
+                </div>
+
+                <!-- Total Row -->
+                <div class="bg-green-600 p-5 flex items-center justify-between text-white">
+                    <span class="font-bold text-lg uppercase tracking-wide">Tổng Cộng</span>
+                    <span class="font-bold text-2xl" id="grandTotal">0 đ</span>
+                </div>
+            </div>
+
+            <!-- Reset Button -->
+            <button onclick="resetData()" class="w-full mt-6 py-3 px-4 bg-white border border-red-200 text-red-500 rounded-xl font-semibold hover:bg-red-50 hover:border-red-300 transition-colors flex items-center justify-center gap-2 group">
+                <i class="fa-solid fa-rotate-right group-hover:rotate-180 transition-transform duration-500"></i>
+                <span>Xóa dữ liệu về 0</span>
+            </button>
+
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="mt-auto py-8 border-t border-slate-200 bg-white/50 backdrop-blur-sm">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <p class="text-slate-400 text-sm font-medium">
+                &copy; 2025 Tool Tiện Ích. Designed for productivity.
+            </p>
+        </div>
+    </footer>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // Biến toàn cục lưu trữ
+        let count1 = 0;
+        let count2 = 0;
+
+        // --- Helper: Format số có dấu chấm ---
+        function formatCurrency(value) {
+            if (!value) return '';
+            // Xóa hết ký tự không phải số
+            const number = value.toString().replace(/\D/g, '');
+            // Thêm dấu chấm
+            return number.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        }
+
+        // --- Helper: Parse số từ chuỗi có dấu chấm ---
+        function parseCurrency(value) {
+            if (!value) return 0;
+            return parseInt(value.toString().replace(/\./g, '')) || 0;
+        }
+
+        // --- Xử lý input giá ---
+        function handlePriceInput(input) {
+            // Lấy vị trí con trỏ hiện tại
+            const cursorPosition = input.selectionStart;
+            const oldLength = input.value.length;
+
+            // Format giá trị
+            const formatted = formatCurrency(input.value);
+            input.value = formatted;
+
+            // Tính toán lại vị trí con trỏ (để không bị nhảy về cuối khi thêm dấu chấm)
+            const newLength = formatted.length;
+            const newCursorPosition = cursorPosition + (newLength - oldLength);
+            input.setSelectionRange(newCursorPosition, newCursorPosition);
+
+            calculateTotalOnly();
+        }
+
+        // --- 1. Khi mở trang: Lấy dữ liệu cũ ---
+        window.onload = function() {
+            if(localStorage.getItem('c1_count')) count1 = parseInt(localStorage.getItem('c1_count'));
+            if(localStorage.getItem('c2_count')) count2 = parseInt(localStorage.getItem('c2_count'));
+            
+            // Đưa giá trị vào ô nhập
+            document.getElementById('qty1').value = count1;
+            document.getElementById('qty2').value = count2;
+
+            if(localStorage.getItem('c1_price')) {
+                const p1 = localStorage.getItem('c1_price');
+                document.getElementById('price1').value = formatCurrency(p1);
+            }
+            if(localStorage.getItem('c2_price')) {
+                const p2 = localStorage.getItem('c2_price');
+                document.getElementById('price2').value = formatCurrency(p2);
+            }
+            
+            calculateTotalOnly();
+        }
+
+        // --- 2. Xử lý khi bấm nút to ---
+        function clickButton(type) {
+            if(type === 1) {
+                count1++;
+                document.getElementById('qty1').value = count1; // Cập nhật ô input
+            } else {
+                count2++;
+                document.getElementById('qty2').value = count2; // Cập nhật ô input
+            }
+            saveData();
+            calculateTotalOnly();
+        }
+
+        // --- 3. Xử lý khi người dùng tự sửa số trong ô input ---
+        function manualChange() {
+            // Lấy giá trị từ ô input gán ngược lại vào biến
+            let val1 = document.getElementById('qty1').value;
+            let val2 = document.getElementById('qty2').value;
+
+            // Nếu ô trống thì coi là 0
+            count1 = val1 ? parseInt(val1) : 0;
+            count2 = val2 ? parseInt(val2) : 0;
+
+            saveData();
+            calculateTotalOnly();
+        }
+
+        // --- 4. Hàm chỉ tính tiền và hiển thị (không thay đổi giá trị ô input) ---
+        function calculateTotalOnly() {
+            // Dùng parseCurrency để lấy giá trị số thực
+            let p1 = parseCurrency(document.getElementById('price1').value);
+            let p2 = parseCurrency(document.getElementById('price2').value);
+
+            let total1 = count1 * p1;
+            let total2 = count2 * p2;
+            let grandTotal = total1 + total2;
+
+            document.getElementById('money1').innerText = total1.toLocaleString('vi-VN') + ' đ';
+            document.getElementById('money2').innerText = total2.toLocaleString('vi-VN') + ' đ';
+            document.getElementById('grandTotal').innerText = grandTotal.toLocaleString('vi-VN') + ' đ';
+
+            // Lưu giá tiền (lưu số nguyên gốc, không phải string đã format)
+            localStorage.setItem('c1_price', p1);
+            localStorage.setItem('c2_price', p2);
+        }
+
+        // --- 5. Lưu dữ liệu ---
+        function saveData() {
+            localStorage.setItem('c1_count', count1);
+            localStorage.setItem('c2_count', count2);
+        }
+
+        // --- 6. Reset ---
+        function resetData() {
+            if(confirm('Chắc chắn xóa số lượt đếm về 0?')) {
+                count1 = 0;
+                count2 = 0;
+                document.getElementById('qty1').value = 0;
+                document.getElementById('qty2').value = 0;
+                saveData();
+                calculateTotalOnly();
+            }
+        }
+    </script>
+
+</body>
+</html>
